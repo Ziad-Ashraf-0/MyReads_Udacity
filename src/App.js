@@ -9,6 +9,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [wantToReadShelf, setWantToReadShelf] = useState([]);
   const [readShelf, setReadShelf] = useState([]);
+  const [booksAll, setBooksAll] = useState([]);
   const [currentlyReadingShelf, setCurrentlyReadingShelf] = useState([]);
   const [booksFromSearch, setBooksFromSearch] = useState([]);
   const [booksFound, setBooksFound] = useState(false);
@@ -18,6 +19,7 @@ function App() {
   useEffect(() => {
     const getBooks = async () => {
       const books = await BooksAPI.getAll();
+      setBooksAll(books);
       const currentlyReading = books.filter(
         (book) => book.shelf === "currentlyReading"
       );
@@ -60,7 +62,16 @@ function App() {
   async function handleSearch(query) {
     await BooksAPI.search(query).then((books) => {
       if (books && !books.error) {
-        setBooksFromSearch(books);
+        setBooksFromSearch(
+          books.map((bookSearch) => {
+            booksAll.forEach((book) => {
+              if (bookSearch.id === book.id) {
+                bookSearch.shelf = book.shelf;
+              }
+            });
+            return bookSearch;
+          })
+        );
         setBooksFound(true);
       } else {
         setBooksFound(false);

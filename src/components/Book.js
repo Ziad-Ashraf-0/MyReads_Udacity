@@ -4,6 +4,7 @@ function Book({ book, changeShelf }) {
   console.log(book);
 
   const image = book.imageLinks ? book.imageLinks.thumbnail : "";
+  const control = book.shelf ? book.shelf : "none";
   const updateShelf = (e) => {
     changeShelf(book, e.target.value);
   };
@@ -20,7 +21,7 @@ function Book({ book, changeShelf }) {
             }}
           ></div>
           <div className="book-shelf-changer">
-            <select onChange={updateShelf} value="none">
+            <select onChange={updateShelf} value={control}>
               <option value="none" disabled>
                 Move to...
               </option>
